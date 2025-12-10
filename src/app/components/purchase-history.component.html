@@ -1,0 +1,211 @@
+<div class="history-container">
+  <div class="history-header">
+    <div class="header-content">
+      <h1 class="main-title">
+        <span class="title-icon">📋</span>
+        Mis Compras
+      </h1>
+      <p class="subtitle">Historial completo de tus compras y keys de activación</p>
+    </div>
+    <div class="header-decoration"></div>
+  </div>
+
+  <!-- Estadísticas del Usuario -->
+  <div class="stats-section" *ngIf="!isLoading && orders.length > 0">
+    <h2 class="section-title">
+      <span class="title-icon">📊</span>
+      Resumen de Actividad
+    </h2>
+    <div class="stats-grid">
+      <div class="stat-card purchases-card">
+        <div class="stat-icon">📦</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ userStats.totalOrders }}</div>
+          <div class="stat-label">Compras Realizadas</div>
+        </div>
+      </div>
+      <div class="stat-card spending-card">
+        <div class="stat-icon">💰</div>
+        <div class="stat-content">
+          <div class="stat-value">${{ getTotalSpent() }}</div>
+          <div class="stat-label">Total Invertido</div>
+        </div>
+      </div>
+      <div class="stat-card games-card">
+        <div class="stat-icon">🎮</div>
+        <div class="stat-content">
+          <div class="stat-value">{{ userStats.totalGames }}</div>
+          <div class="stat-label">Juegos en Biblioteca</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-section" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>⏳ Cargando tu biblioteca de juegos...</p>
+  </div>
+
+  <!-- Lista de Órdenes -->
+  <div class="orders-section" *ngIf="!isLoading && orders.length > 0">
+    <h2 class="section-title">
+      <span class="title-icon">🎯</span>
+      Historial de Órdenes
+    </h2>
+    
+    <div class="orders-list">
+      <div class="order-card" *ngFor="let order of orders; trackBy: trackByOrderId">
+        <!-- Header de la Orden -->
+        <div class="order-header">
+          <div class="order-main-info">
+            <div class="order-identity">
+              <div class="order-number">
+                <span class="order-icon">🧾</span>
+                {{ order.orderNumber }}
+              </div>
+              <div class="order-date">{{ formatDate(order.purchaseDate) }}</div>
+            </div>
+            <div class="order-status-section">
+              <span class="order-status" [class]="getStatusClass(order.status)">
+                <span class="status-icon">{{ getStatusIcon(order.status) }}</span>
+                {{ getStatusText(order.status) }}
+              </span>
+            </div>
+          </div>
+          <div class="order-amount">
+            <div class="amount-label">Total Pagado</div>
+            <div class="amount-value">${{ getOrderTotal(order) }}</div>
+          </div>
+        </div>
+
+        <!-- Contenido de la Orden -->
+        <div class="order-body">
+          <!-- Items de la Orden -->
+          <div class="games-section">
+            <h4 class="subsection-title">
+              <span class="subsection-icon">🎮</span>
+              Juegos Adquiridos
+            </h4>
+            <div class="games-grid">
+              <div class="game-item" *ngFor="let item of order.items">
+                <div class="game-info">
+                  <div class="game-title">{{ item.gameTitle }}</div>
+                  <div class="game-details">
+                    <span class="detail-badge">
+                      <span class="badge-icon">📊</span>
+                      {{ item.quantity }}x
+                    </span>
+                    <span class="detail-badge">
+                      <span class="badge-icon">💰</span>
+                      ${{ getItemPrice(item) }}
+                    </span>
+                    <span class="detail-badge total-badge">
+                      <span class="badge-icon">🏷️</span>
+                      ${{ getItemTotal(item) }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sección de Keys -->
+          <div class="keys-section">
+            <div class="keys-header">
+              <h4 class="subsection-title">
+                <span class="subsection-icon">🔑</span>
+                Keys de Activación
+              </h4>
+              <button 
+                class="btn-resend" 
+                (click)="resendKeys(order.orderNumber)"
+                title="Reenviar keys por correo electrónico"
+              >
+                <span class="btn-icon">📧</span>
+                Reenviar
+              </button>
+            </div>
+
+            <div class="keys-container">
+              <div class="key-card" *ngFor="let key of getOrderKeys(order.orderNumber)">
+                <div class="key-header">
+                  <div class="key-game-info">
+                    <div class="key-game-title">{{ key.gameTitle }}</div>
+                    <div class="key-platform">
+                      <span class="platform-icon">🎮</span>
+                      {{ key.activationPlatform }}
+                    </div>
+                  </div>
+                  <div class="key-status">
+                    <span class="status-badge" [class]="key.isUsed ? 'used' : 'available'">
+                      {{ key.isUsed ? '✅ Activada' : '🔑 Disponible' }}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="key-body">
+                  <div 
+                    class="key-code-display" 
+                    (click)="copyKeyToClipboard(key.key)"
+                    title="Click para copiar al portapapeles"
+                  >
+                    <div class="key-code">{{ key.key }}</div>
+                    <div class="copy-hint">📋 Click para copiar</div>
+                  </div>
+                  
+                  <div class="key-metadata">
+                    <div class="metadata-item">
+                      <span class="metadata-icon">📅</span>
+                      <span>{{ formatDate(key.purchaseDate) }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="activation-help">
+              <div class="help-icon">💡</div>
+              <div class="help-content">
+                <h5>Instrucciones de Activación</h5>
+                <ol>
+                  <li>Abre Steam y ve a "Juegos" → "Activar un producto en Steam"</li>
+                  <li>Acepta el acuerdo de licencia de Steam</li>
+                  <li>Copia y pega la key exactamente como aparece</li>
+                  <li>¡Disfruta tu juego!</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Historial Vacío -->
+  <div class="empty-section" *ngIf="!isLoading && orders.length === 0">
+    <div class="empty-content">
+      <div class="empty-icon">🛒</div>
+      <h2 class="empty-title">Tu biblioteca está vacía</h2>
+      <p class="empty-message">Cuando realices tu primera compra, tus juegos y keys aparecerán aquí</p>
+      <div class="empty-features">
+        <div class="feature-item">
+          <span class="feature-icon">⚡</span>
+          <span>Activación instantánea</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">📧</span>
+          <span>Keys por correo</span>
+        </div>
+        <div class="feature-item">
+          <span class="feature-icon">🔒</span>
+          <span>Compras seguras</span>
+        </div>
+      </div>
+      <a routerLink="/games" class="btn-explore">
+        <span class="btn-icon">🎮</span>
+        Explorar Juegos
+      </a>
+    </div>
+  </div>
+</div>

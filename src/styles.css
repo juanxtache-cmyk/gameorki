@@ -1,0 +1,886 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Estilos globales para tipografía */
+:root {
+  --font-family: Arial, sans-serif;
+  --base-font-size: 16px;
+  --font-weight: normal;
+}
+
+/* Aplicar estilos base a todo el documento */
+html, body {
+  font-family: var(--font-family) !important;
+  font-size: var(--base-font-size) !important;
+  font-weight: var(--font-weight) !important;
+}
+
+/* Asegurar que los elementos heredan la fuente */
+*, *::before, *::after {
+  font-family: inherit;
+}
+
+body {
+  font-family: var(--font-family, Arial);
+  font-size: var(--base-font-size, 16px);
+  font-weight: var(--font-weight, normal);
+}
+
+@layer base {
+  :root {
+    --font-family: Arial;
+    --base-font-size: 16px;
+    --font-weight: normal;
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 84% 4.9%;
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Variables de tema - Por defecto Dark */
+:root {
+  --bg-primary: #220033;
+  --bg-secondary: #440066;
+  --bg-tertiary: #660099;
+  --text-primary: #00ff99;
+  --text-secondary: #ff00ff;
+  --text-tertiary: #00ffaa;
+  --border-color: #ff00ff;
+  --accent-color: #ff00ff;
+  --accent-hover: #ff66ff;
+  --header-bg: #330066;
+  --header-text: #00ffaa;
+  --card-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+  --input-bg: #220044;
+  --footer-bg: #330066;
+  --footer-text: #00ffaa;
+  --link-color: #ff00ff;
+  --heading-color: #00ffaa;
+  --pixel-font: 'Courier New', monospace;
+  --retro-font: 'Courier New', monospace;
+  
+  /* Variable para tamaño de texto configurable */
+  --base-font-size: 16px;
+}
+
+/* Tema Retro (morado/vaporwave) */
+html.retro-theme,
+body.retro-theme {
+  --bg-primary: #220033;
+  --bg-secondary: #440066;
+  --bg-tertiary: #660099;
+  --text-primary: #00ff99;
+  --text-secondary: #ff00ff;
+  --text-tertiary: #00ffaa;
+  --border-color: #ff00ff;
+  --accent-color: #ff00ff;
+  --accent-hover: #ff66ff;
+  --header-bg: #220033;
+  --header-text: #00ffaa;
+  --card-shadow: 0 0 20px rgba(255, 0, 255, 0.3);
+  --input-bg: #220044;
+  --footer-bg: #220033;
+  --footer-text: #00ffaa;
+  --link-color: #ff00ff;
+  --heading-color: #00ffaa;
+  --pixel-font: 'Courier New', monospace;
+  --retro-font: 'Courier New', monospace;
+
+  /* Aplicar directamente los estilos más importantes */
+  background-color: #220033;
+  color: #00ff99;
+}
+
+/* Tema oscuro (dark/negro) */
+html.dark-theme,
+body.dark-theme {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --bg-tertiary: #2d2d2d;
+  --text-primary: #f5f5f7;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #808080;
+  --border-color: #444444;
+  --accent-color: #ff6b8b;
+  --accent-hover: #ff8fa3;
+  --header-bg: #121212;
+  --header-text: #ffffff;
+  --card-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  --input-bg: #2d2d2d;
+  --footer-bg: #121212;
+  --footer-text: #f5f5f5;
+  --link-color: #ff6b8b;
+  --heading-color: #ffffff;
+  --pixel-font: 'Courier New', monospace;
+  --retro-font: 'Courier New', monospace;
+
+  /* Aplicar directamente los estilos más importantes */
+  background-color: #121212;
+  color: #f5f5f7;
+}
+
+
+
+/* Estilos generales */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* Utilidades */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Estilos para componentes específicos */
+.game-card {
+  background-color: var(--bg-secondary);
+  box-shadow: var(--card-shadow);
+}
+
+.game-title a,
+.section-header h2,
+.game-details h2,
+.register-header h2,
+.login-header h2 {
+  color: var(--heading-color);
+}
+
+.game-category,
+.game-description p,
+.meta-label,
+.detail-label {
+  color: var(--text-secondary);
+}
+
+.game-purchase,
+.newsletter-form input {
+  background-color: var(--bg-tertiary);
+}
+
+/* Estilos específicos para textos */
+p {
+  color: var(--text-secondary);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading-color);
+}
+
+a:not(.btn) {
+  color: var(--link-color);
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+/* Estilos para manejo de imágenes en admin panel */
+.image-container {
+  position: relative;
+}
+
+.screenshot-preview {
+  max-width: 100%;
+  height: auto;
+}
+
+.image-placeholder {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  background: var(--bg-tertiary);
+  border: 2px dashed var(--border-color);
+  border-radius: 4px;
+  padding: 10px;
+  text-align: center;
+  z-index: 1;
+}
+
+.image-placeholder.error {
+  border-color: #ff3333;
+  background: rgba(255, 51, 51, 0.9);
+}
+
+.loading-spinner {
+  color: var(--text-secondary);
+  font-size: 14px;
+  animation: pulse 1.5s infinite;
+}
+
+.error-message {
+  color: #ff6666;
+  font-size: 12px;
+  text-align: center;
+}
+
+.btn-retry {
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  cursor: pointer;
+  margin-top: 5px;
+  transition: background-color 0.3s;
+}
+
+.btn-retry:hover {
+  background: var(--accent-hover);
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.5; }
+  100% { opacity: 1; }
+}
+
+/* Estilos SIMPLIFICADOS para capturas de pantalla */
+.screenshots-section {
+  background: var(--bg-secondary);
+  padding: 20px;
+  border-radius: 8px;
+  border: 2px solid var(--border-color);
+}
+
+.add-screenshot-simple {
+  background: var(--bg-tertiary);
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.simple-add-form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.screenshot-input-simple {
+  flex: 1;
+  padding: 12px;
+  border: 2px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-primary);
+  border-radius: 4px;
+  font-family: var(--retro-font);
+}
+
+.btn-add-simple {
+  padding: 12px 20px;
+  background: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  font-family: var(--retro-font);
+}
+
+.btn-add-simple:hover {
+  background: #218838;
+}
+
+.quick-examples {
+  text-align: center;
+}
+
+.btn-example {
+  margin: 5px;
+  padding: 8px 15px;
+  background: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: var(--retro-font);
+}
+
+.btn-example:hover {
+  background: var(--accent-hover);
+}
+
+.screenshots-list-simple {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+}
+
+.screenshot-card {
+  background: var(--bg-tertiary);
+  border: 2px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.screenshot-preview {
+  position: relative;
+}
+
+.img-simple {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.screenshot-info {
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.screenshot-number {
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 12px;
+}
+
+.btn-delete-simple {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.btn-delete-simple:hover {
+  background: #c82333;
+}
+
+.screenshot-url-display {
+  padding: 5px 10px;
+  background: var(--input-bg);
+  border-top: 1px solid var(--border-color);
+}
+
+.screenshot-url-display small {
+  color: var(--text-tertiary);
+  font-size: 10px;
+}
+
+/* Estilos globales para tamaño de texto configurable */
+body {
+  font-size: var(--base-font-size, 16px);
+  line-height: 1.6;
+}
+
+/* Aplicar tamaño de texto configurable a TODOS los elementos de texto */
+*, *::before, *::after {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Aplicar tamaño específico a elementos que deben heredar */
+p, span, div, label, input, textarea, select, button, 
+a, li, td, th, code, pre, blockquote, 
+.text-content, .game-title, .game-description, 
+.nav-link, .btn, .card-text, .menu-item {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Mantener proporciones para títulos */
+h1, .h1 {
+  font-size: calc(var(--base-font-size, 16px) * 2.5) !important;
+}
+
+h2, .h2 {
+  font-size: calc(var(--base-font-size, 16px) * 2) !important;
+}
+
+h3, .h3 {
+  font-size: calc(var(--base-font-size, 16px) * 1.75) !important;
+}
+
+h4, .h4 {
+  font-size: calc(var(--base-font-size, 16px) * 1.5) !important;
+}
+
+h5, .h5 {
+  font-size: calc(var(--base-font-size, 16px) * 1.25) !important;
+}
+
+h6, .h6 {
+  font-size: calc(var(--base-font-size, 16px) * 1.1) !important;
+}
+
+/* Tamaños de texto específicos con !important para asegurar aplicación */
+small, .small {
+  font-size: calc(var(--base-font-size, 16px) * 0.875) !important;
+}
+
+.text-xs {
+  font-size: calc(var(--base-font-size, 16px) * 0.75) !important;
+}
+
+.text-sm {
+  font-size: calc(var(--base-font-size, 16px) * 0.875) !important;
+}
+
+.text-base {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+.text-lg {
+  font-size: calc(var(--base-font-size, 16px) * 1.125) !important;
+}
+
+.text-xl {
+  font-size: calc(var(--base-font-size, 16px) * 1.25) !important;
+}
+
+.text-2xl {
+  font-size: calc(var(--base-font-size, 16px) * 1.5) !important;
+}
+
+.text-3xl {
+  font-size: calc(var(--base-font-size, 16px) * 1.875) !important;
+}
+
+/* Clases específicas para elementos de juegos y componentes */
+.game-card, .game-card * {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+.game-title {
+  font-size: calc(var(--base-font-size, 16px) * 1.25) !important;
+}
+
+.game-price {
+  font-size: calc(var(--base-font-size, 16px) * 1.1) !important;
+}
+
+.nav-item, .nav-link {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+.btn, button {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+.form-control, input, textarea, select {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Override para elementos con clases de Tailwind */
+.prose, .prose * {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Estilos específicos para componentes de la aplicación */
+.header-link, .footer-text, .menu-text {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Para Angular Material y otros frameworks */
+.mat-button, .mat-raised-button, .mat-flat-button,
+.mat-form-field, .mat-input-element,
+.mat-option, .mat-select-value {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Para elementos de Bootstrap si se usan */
+.card-title, .card-text, .list-group-item,
+.dropdown-item, .nav-link, .navbar-text {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* Estilos para forzar la aplicación en elementos específicos del tema */
+[class*="text-"], [class*="font-"] {
+  font-size: var(--base-font-size, 16px) !important;
+}
+
+/* ===== ESTILOS DE CONTRASTE ALTO ===== */
+body.high-contrast {
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+}
+
+/* Aplicar solo colores, sin bordes extra - excluye dropdowns y menús */
+body.high-contrast *:not(.theme-dropdown-menu):not(.dropdown):not(.theme-option):not(.theme-dropdown-menu *):not(.dropdown *) {
+  background-color: transparent !important;
+  color: #FFFF00 !important;
+}
+
+/* Elementos que necesitan fondo negro */
+body.high-contrast,
+body.high-contrast main,
+body.high-contrast header,
+body.high-contrast nav,
+body.high-contrast footer,
+body.high-contrast section,
+body.high-contrast article,
+body.high-contrast aside,
+body.high-contrast .app-container,
+body.high-contrast .home-container,
+body.high-contrast .games-container,
+body.high-contrast .settings-container,
+body.high-contrast div[class*="container"],
+body.high-contrast div[class*="wrapper"] {
+  background-color: #000000 !important;
+}
+
+/* Botones en modo contraste */
+body.high-contrast button,
+body.high-contrast .btn,
+body.high-contrast a.btn,
+body.high-contrast [role="button"],
+body.high-contrast .btn-primary,
+body.high-contrast .btn-secondary,
+body.high-contrast .btn-typography {
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+  border: 2px solid #FFFF00 !important;
+  text-decoration: none !important;
+}
+
+body.high-contrast button:hover,
+body.high-contrast .btn:hover,
+body.high-contrast a.btn:hover,
+body.high-contrast [role="button"]:hover {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+}
+
+/* Links en modo contraste - SOLO subrayar links de navegación importantes */
+body.high-contrast a:not(.btn):not(.btn-primary):not(.btn-secondary):not(.btn-typography):not([class*="game-card"]) {
+  color: #00FFFF !important;
+  background-color: transparent !important;
+}
+
+/* Links en navegación y footer - sin subrayado innecesario */
+body.high-contrast nav a,
+body.high-contrast footer a {
+  color: #00FFFF !important;
+  text-decoration: none !important;
+}
+
+body.high-contrast nav a:hover,
+body.high-contrast footer a:hover {
+  color: #FFFFFF !important;
+  text-decoration: underline !important;
+}
+
+/* Links normales en contenido */
+body.high-contrast .view-all,
+body.high-contrast a[routerLink] {
+  color: #00FFFF !important;
+  text-decoration: none !important;
+}
+
+body.high-contrast .view-all:hover,
+body.high-contrast a[routerLink]:hover {
+  color: #FFFFFF !important;
+}
+
+/* Inputs en modo contraste */
+body.high-contrast input,
+body.high-contrast textarea,
+body.high-contrast select {
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+  border: 2px solid #FFFF00 !important;
+}
+
+body.high-contrast input::placeholder,
+body.high-contrast textarea::placeholder {
+  color: #CCCC00 !important;
+}
+
+/* Cards de juegos */
+body.high-contrast .card,
+body.high-contrast .game-card,
+body.high-contrast [class*="game-card"],
+body.high-contrast [class*="product-card"] {
+  background-color: #1a1a1a !important;
+  border: 2px solid #FFFF00 !important;
+}
+
+/* Secciones con bordes */
+body.high-contrast .settings-section,
+body.high-contrast .contraste-control,
+body.high-contrast [class*="section"] {
+  background-color: #0a0a0a !important;
+  border: 2px solid #FFFF00 !important;
+}
+
+/* Imágenes mantienen su visibilidad */
+body.high-contrast img {
+  opacity: 1 !important;
+  filter: contrast(1.2) brightness(0.9) !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* SVG e iconos */
+body.high-contrast svg,
+body.high-contrast i {
+  fill: #FFFF00 !important;
+  color: #FFFF00 !important;
+  background-color: transparent !important;
+  border: none !important;
+}
+
+/* Headers y títulos */
+body.high-contrast h1,
+body.high-contrast h2,
+body.high-contrast h3,
+body.high-contrast h4,
+body.high-contrast h5,
+body.high-contrast h6,
+body.high-contrast .settings-title,
+body.high-contrast .section-header h2 {
+  color: #FFFFFF !important;
+  background-color: transparent !important;
+}
+
+/* Texto normal */
+body.high-contrast p,
+body.high-contrast span:not(.theme-icon):not(.theme-name),
+body.high-contrast label,
+body.high-contrast li {
+  color: #FFFF00 !important;
+  background-color: transparent !important;
+}
+
+/* Evitar bordes en divs genéricos */
+body.high-contrast div {
+  border: none !important;
+}
+
+/* Solo los divs que son contenedores principales con bordes */
+body.high-contrast div[class*="container"],
+body.high-contrast div[class*="wrapper"],
+body.high-contrast div[class*="layout"] {
+  background-color: #000000 !important;
+}
+
+/* Hero section */
+body.high-contrast .hero {
+  background-color: #000000 !important;
+  border: 2px solid #FFFF00 !important;
+}
+
+body.high-contrast .hero-content {
+  background-color: transparent !important;
+}
+
+/* Grid de juegos */
+body.high-contrast .games-grid {
+  background-color: transparent !important;
+}
+
+/* Toggle switch */
+body.high-contrast .toggle-switch .slider {
+  background-color: #333333 !important;
+  border: 1px solid #FFFF00 !important;
+}
+
+body.high-contrast .toggle-switch input:checked + .slider {
+  background-color: #FFFF00 !important;
+}
+
+body.high-contrast .toggle-switch .slider:before {
+  background-color: #FFFFFF !important;
+}
+
+/* Header/Navbar específico */
+body.high-contrast header {
+  border-bottom: 2px solid #FFFF00 !important;
+}
+
+/* Footer específico */
+body.high-contrast footer {
+  border-top: 2px solid #FFFF00 !important;
+}
+
+/* ===== DROPDOWNS Y MENÚS DESPLEGABLES ===== */
+/* Menú de temas/theme selector */
+body.high-contrast .theme-dropdown-menu,
+body.high-contrast .dropdown {
+  background-color: #000000 !important;
+  border: 2px solid #FFFF00 !important;
+  box-shadow: 4px 4px 0 rgba(255, 255, 0, 0.3) !important;
+}
+
+/* Opciones dentro del menú de temas */
+body.high-contrast .theme-option,
+body.high-contrast .dropdown a,
+body.high-contrast .dropdown button {
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+  border-bottom: 1px solid #FFFF00 !important;
+}
+
+body.high-contrast .theme-option:hover,
+body.high-contrast .dropdown a:hover,
+body.high-contrast .dropdown button:hover {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+}
+
+body.high-contrast .theme-option.active {
+  background-color: #CCCC00 !important;
+  color: #000000 !important;
+  font-weight: bold !important;
+}
+
+/* Iconos dentro de los menús */
+body.high-contrast .theme-option svg,
+body.high-contrast .theme-option span,
+body.high-contrast .dropdown svg,
+body.high-contrast .dropdown span {
+  color: inherit !important;
+  fill: inherit !important;
+}
+
+/* Menú de usuario */
+body.high-contrast .user-info .dropdown {
+  background-color: #000000 !important;
+  border: 2px solid #FFFF00 !important;
+}
+
+/* Popovers y modales */
+body.high-contrast [class*="popover"],
+body.high-contrast [class*="modal"],
+body.high-contrast [role="dialog"] {
+  background-color: #000000 !important;
+  border: 2px solid #FFFF00 !important;
+  color: #FFFF00 !important;
+}
+
+/* Custom cursor styles */
+:root {
+  --cursor-size: 16px;
+  /* Offsets para alinear la punta del cursor visual con el puntero real */
+  --cursor-offset-x: -6px;
+  --cursor-offset-y: -2px;
+}
+
+#custom-cursor {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  width: var(--cursor-size);
+  height: var(--cursor-size);
+  transform: translate(var(--cursor-offset-x, 0px), var(--cursor-offset-y, 0px));
+  left: 0;
+  top: 0;
+}
+
+#custom-cursor-img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Ocultar el cursor nativo en toda la app para que se vea el cursor personalizado */
+html, body, * {
+  cursor: none !important;
+}

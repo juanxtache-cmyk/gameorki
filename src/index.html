@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en" class="dark-theme">
+<head>
+  <meta charset="utf-8">
+  <title>GameStore</title>
+  <base href="/">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="icon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+  
+  <!-- Estilos inline para asegurar que el tema se aplique correctamente -->
+  <style>
+    /* Estilos base - Dark Theme */
+    body {
+      font-family: 'VT323', monospace;
+      margin: 0;
+      padding: 0;
+      background-color: #220033;
+      color: #00ff99;
+      transition: background-color 0.3s ease, color 0.3s ease;
+      text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
+      background-image: 
+        linear-gradient(rgba(255, 0, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    
+    /* Dark Theme (Purple/Green) */
+    html.dark-theme,
+    body.dark-theme {
+      background-color: #220033;
+      color: #00ff99;
+      background-image: 
+        linear-gradient(rgba(255, 0, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    
+    /* Retro Theme (Modern Dark) */
+    html.retro-theme,
+    body.retro-theme {
+      background-color: #121212;
+      color: #f5f5f7;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    
+    /* Efecto scanline */
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        0deg,
+        rgba(0, 0, 0, 0.15),
+        rgba(0, 0, 0, 0.15) 1px,
+        transparent 1px,
+        transparent 2px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+    
+    /* Estilos de texto para tema Dark */
+    body.dark-theme p {
+      color: #ff00ff;
+    }
+    
+    body.dark-theme h1,
+    body.dark-theme h2,
+    body.dark-theme h3,
+    body.dark-theme h4,
+    body.dark-theme h5,
+    body.dark-theme h6 {
+      color: #00ffaa;
+      font-family: 'Press Start 2P', cursive;
+      text-transform: uppercase;
+    }
+    
+    body.dark-theme a:not(.btn) {
+      color: #ff00ff;
+    }
+    
+    /* Estilos de texto para tema Retro */
+    body.retro-theme p {
+      color: #b0b0b0;
+    }
+    
+    body.retro-theme h1,
+    body.retro-theme h2,
+    body.retro-theme h3,
+    body.retro-theme h4,
+    body.retro-theme h5,
+    body.retro-theme h6 {
+      color: #ffffff;
+      font-family: 'Press Start 2P', cursive;
+      text-transform: uppercase;
+    }
+    
+    body.retro-theme a:not(.btn) {
+      color: #ff6b8b;
+    }
+  </style>
+  <script src="https://www.paypal.com/sdk/js?client-id=AZjIdAwwDYaEWYersqOVudynQvixRr4Ybdw3kCsnnwT-xzKq5ShBmYYuU9ckBa1a3vJeK5myMAJIC-0H&currency=MXN"></script>
+</head>
+<body class="dark-theme">
+  <app-root></app-root>
+  
+
+  
+  <script>
+    // Función para cambiar el tema - ahora para debugging
+    function setThemeManually(theme) {
+      const html = document.documentElement;
+      const body = document.body;
+      
+      console.log(`Aplicando tema manualmente: ${theme}`);
+      
+      // Remover todas las clases de tema
+      html.classList.remove('dark-theme', 'retro-theme', 'grayscale-theme');
+      body.classList.remove('dark-theme', 'retro-theme', 'grayscale-theme');
+      
+      // Aplicar el tema seleccionado
+      if (theme === 'dark') {
+        html.classList.add('dark-theme');
+        body.classList.add('dark-theme');
+        body.style.backgroundColor = '#220033';
+        body.style.color = '#00ff99';
+        body.style.backgroundImage = 'linear-gradient(rgba(255, 0, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 0, 255, 0.05) 1px, transparent 1px)';
+      } else if (theme === 'retro') {
+        html.classList.add('retro-theme');
+        body.classList.add('retro-theme');
+        body.style.backgroundColor = '#121212';
+        body.style.color = '#f5f5f7';
+        body.style.backgroundImage = 'linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)';
+      } else if (theme === 'grayscale') {
+        html.classList.add('grayscale-theme');
+        body.classList.add('grayscale-theme');
+        body.style.backgroundColor = '#2a2a2a';
+        body.style.color = '#e0e0e0';
+        html.style.filter = 'grayscale(100%)';
+      }
+      
+      localStorage.setItem('theme', theme);
+      console.log(`Tema ${theme} aplicado y guardado en localStorage`);
+      
+      // Aplicar estilos a componentes clave
+      applyThemeToComponents(theme);
+    }
+    
+    // Aplicar estilos a componentes clave
+    function applyThemeToComponents(theme) {
+      // Aplicar estilos al header
+      const header = document.querySelector('header');
+      if (header) {
+        if (theme === 'dark') {
+          header.style.backgroundColor = '#330066';
+          header.style.borderBottom = '3px solid #00ffaa';
+        } else if (theme === 'retro') {
+          header.style.backgroundColor = '#0f0f1a';
+          header.style.borderBottom = '3px solid #444444';
+        } else if (theme === 'grayscale') {
+          header.style.backgroundColor = '#1a1a1a';
+          header.style.borderBottom = '3px solid #666666';
+        }
+      }
+      
+      // Aplicar estilos al footer
+      const footer = document.querySelector('footer');
+      if (footer) {
+        if (theme === 'dark') {
+          footer.style.backgroundColor = '#330066';
+          footer.style.borderTop = '3px solid #00ffaa';
+        } else if (theme === 'retro') {
+          footer.style.backgroundColor = '#0f0f1a';
+          footer.style.borderTop = '3px solid #444444';
+        } else if (theme === 'grayscale') {
+          footer.style.backgroundColor = '#1a1a1a';
+          footer.style.borderTop = '3px solid #666666';
+        }
+      }
+      
+      // Aplicar estilos a las tarjetas de juegos
+      const gameCards = document.querySelectorAll('.game-card');
+      gameCards.forEach(card => {
+        if (theme === 'dark') {
+          card.style.backgroundColor = '#440066';
+          card.style.color = '#00ff99';
+          card.style.border = '3px solid #00ffaa';
+          card.style.boxShadow = '0 0 0 4px #ff00ff, 0 0 0 8px #330066';
+        } else if (theme === 'retro') {
+          card.style.backgroundColor = '#1e1e1e';
+          card.style.color = '#f5f5f7';
+          card.style.border = '3px solid #444444';
+          card.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.3)';
+        } else if (theme === 'grayscale') {
+          card.style.backgroundColor = '#333333';
+          card.style.color = '#e0e0e0';
+          card.style.border = '3px solid #666666';
+          card.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.3)';
+        }
+      });
+      
+      // Aplicar estilos a los inputs
+      const inputs = document.querySelectorAll('input, select, textarea');
+      inputs.forEach(input => {
+        if (theme === 'dark') {
+          input.style.backgroundColor = '#220044';
+          input.style.color = '#00ff99';
+          input.style.borderColor = '#00ffaa';
+        } else if (theme === 'retro') {
+          input.style.backgroundColor = '#2d2d2d';
+          input.style.color = '#f5f5f7';
+          input.style.borderColor = '#444444';
+        } else if (theme === 'grayscale') {
+          input.style.backgroundColor = '#404040';
+          input.style.color = '#f0f0f0';
+          input.style.borderColor = '#777777';
+        }
+      });
+      
+      // Aplicar estilos a los textos
+      applyThemeToComponents(theme);
+    }
+    
+    // Aplicar estilos a textos
+    function applyTextStyles(theme) {
+      let textSecondary, linkColor, headingColor;
+      
+      // Definir colores según el tema
+      if (theme === 'dark') {
+        textSecondary = '#ff00ff';
+        linkColor = '#ff00ff';
+        headingColor = '#00ffaa';
+      } else if (theme === 'retro') {
+        textSecondary = '#b0b0b0';
+        linkColor = '#ff6b8b';
+        headingColor = '#ffffff';
+      } else if (theme === 'grayscale') {
+        textSecondary = '#b0b0b0';
+        linkColor = '#cccccc';
+        headingColor = '#f0f0f0';
+      }
+      
+      // Aplicar estilos a párrafos
+      const paragraphs = document.querySelectorAll('p');
+      paragraphs.forEach(p => {
+        p.style.color = textSecondary;
+      });
+      
+      // Aplicar estilos a títulos
+      const headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      headings.forEach(heading => {
+        heading.style.color = headingColor;
+        heading.style.fontFamily = "'Press Start 2P', cursive";
+        heading.style.textTransform = "uppercase";
+      });
+      
+      // Aplicar estilos a enlaces
+      const links = document.querySelectorAll('a:not(.btn)');
+      links.forEach(link => {
+        link.style.color = linkColor;
+      });
+      
+      // Aplicar estilos a spans
+      const spans = document.querySelectorAll('span:not(.cart-count)');
+      spans.forEach(span => {
+        if (!span.closest('button')) {
+          span.style.color = textSecondary;
+        }
+      });
+    }
+    
+    // Verificar tema al cargar
+    document.addEventListener('DOMContentLoaded', function() {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      const html = document.documentElement;
+      const body = document.body;
+      
+      console.log(`Tema guardado en localStorage: ${savedTheme}`);
+      console.log(`Clases actuales en HTML: ${html.className}`);
+      console.log(`Clases actuales en BODY: ${body.className}`);
+      
+      // Aplicar tema guardado o por defecto
+      if (savedTheme && ['dark', 'retro', 'grayscale'].includes(savedTheme)) {
+        console.log(`Aplicando tema ${savedTheme} desde localStorage`);
+        setThemeManually(savedTheme);
+        
+        // Aplicar estilos a componentes
+        setTimeout(() => {
+          applyThemeToComponents(savedTheme);
+        }, 500);
+      }
+    });
+  </script>
+
+  <!-- Chatbot Widget Styles -->
+  <style id="chatbot-widget-styles">
+    #chatbot-toggle {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      border: 3px solid #00ffaa;
+      background: #330066;
+      color: #00ff99;
+      font-family: 'Press Start 2P', cursive;
+      cursor: pointer;
+      z-index: 10010; /* por encima de overlays */
+      box-shadow: 0 0 0 4px #ff00ff55, 0 0 12px #00ffaaaa;
+      pointer-events: auto;
+    }
+    #chatbot-container {
+      position: fixed;
+      right: 20px;
+      bottom: 86px;
+      width: 320px;
+      max-height: 60vh;
+      display: none;
+      flex-direction: column;
+      background: #220044;
+      border: 3px solid #00ffaa;
+      border-radius: 10px;
+      overflow: hidden;
+      z-index: 10010; /* por encima de overlays */
+      box-shadow: 0 0 0 4px #ff00ff55, 0 6px 24px rgba(0,0,0,0.6);
+      color: #00ff99;
+      font-family: 'VT323', monospace;
+      pointer-events: auto; /* captura clics */
+    }
+    #chatbot-header { padding: 10px 12px; background: #330066; border-bottom: 3px solid #00ffaa; display: flex; align-items: center; gap: 10px; }
+    #chatbot-title { font-family: 'Press Start 2P', cursive; font-size: 12px; color: #00ffaa; }
+    #chatbot-messages { padding: 12px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; height: 300px; background: repeating-linear-gradient(0deg, rgba(0,0,0,0.15), rgba(0,0,0,0.15) 1px, transparent 1px, transparent 2px); }
+    .msg { padding: 8px 10px; border: 2px solid #00ffaa; border-radius: 8px; max-width: 90%; }
+    .msg.bot { background: #1a0030; color: #00ffb3; align-self: flex-start; }
+    .msg.user { background: #003322; color: #b3ffea; align-self: flex-end; border-color: #5cffc3; }
+    #chatbot-quick { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; border-top: 3px solid #00ffaa; background: #2a0050; }
+    .quick-btn { cursor: pointer; padding: 6px 8px; border: 2px solid #00ffaa; color: #00ffaa; background: transparent; border-radius: 6px; font-family: 'VT323', monospace; }
+    .quick-btn:hover { background: #330066; }
+    #chatbot-input { display: flex; gap: 8px; padding: 10px; border-top: 3px solid #00ffaa; background: #2a0050; }
+    #chatbot-text { flex: 1; background: #220044; color: #00ff99; border: 2px solid #00ffaa; padding: 6px 8px; border-radius: 6px; font-family: 'VT323', monospace; }
+    #chatbot-send { background: #330066; color: #00ffaa; border: 2px solid #00ffaa; padding: 6px 10px; border-radius: 6px; cursor: pointer; font-family: 'Press Start 2P', cursive; }
+  </style>
+
+  <!-- Chatbot Widget Markup -->
+  <button id="chatbot-toggle" title="Abrir Chatbot">🤖</button>
+  <div id="chatbot-container" role="dialog" aria-label="Chatbot">
+    <div id="chatbot-header">
+      <span id="chatbot-title">GameStore Bot</span>
+    </div>
+    <div id="chatbot-messages" aria-live="polite"></div>
+    <div id="chatbot-quick"></div>
+    <div id="chatbot-input">
+      <input id="chatbot-text" type="text" placeholder="Escribe: descuentos, juegos, soporte, fin" />
+      <button id="chatbot-send">Enviar</button>
+    </div>
+  </div>
+
+  <!-- Chatbot Flow and Engine -->
+  <script>
+    const ChatbotFlow = {
+      "Comenzar": {
+        "output": "De la bienvenida con 'Hola, ¿en qué puedo ayudarte? Puedo ofrecerte descuentos de la semana y ...'",
+        "transition": "Seleccion_Tema"
+      },
+      "Seleccion_Tema": {
+        "Intents": {
+          "Consultar_Descuentos": { "response": "Procediendo a mostrar los descuentos...", "transition": "Descuentos_Semana" },
+          "Pedir_Informacion_Juegos": { "response": "Procediendo a responder sobre juegos disponibles...", "transition": "Juegos_Disponibles" },
+          "Solicitar_Ayuda_Tecnica": { "response": "Procediendo a proveer datos de contacto de soporte...", "transition": "Contacto_Soporte" },
+          "Otracosa": { "response": "Lo siento, solo puedo ayudarte con temas de juegos, descuentos o soporte técnico.", "transition": "Seleccion_Tema" }
+        }
+      },
+      "Descuentos_Semana": {
+        "output": "Responde mostrando la lista de juegos en descuento (Ej: knowledge_base.search('descuentos')).",
+        "Intents": {
+          "Usuario_solicita_informacion_sobre_juegos": { "response": "Respuesta específica sobre el juego consultado.", "transition": "Descuentos_Semana" },
+          "Terminar_consulta": { "transition": "Cierre_Exitoso" }
+        }
+      },
+      "Juegos_Disponibles": {
+        "output": "Responde a preguntas frecuentes: '¿Qué juegos tienen disponibles?', explica qué ofrecen o distingue por géneros.",
+        "Intents": {
+          "El_usuario_quiere_indicar_un_juego": { "response": "Respuesta específica sobre el juego indicado.", "transition": "Juegos_Disponibles" },
+          "Usuario_cambia_de_tema": { "transition": "Descuentos_Semana" },
+          "Terminar_consulta": { "transition": "Cierre_Exitoso" }
+        }
+      },
+      "Contacto_Soporte": {
+        "output": "Entrega el número de contacto: (52) (555) 825-1702 y el correo de soporte técnico. Ofrece asistencia.",
+        "Intents": {
+          "Usuario_solicita_informacion_sobre_juegos": { "transition": "Juegos_Disponibles" },
+          "Recibir_sugerencia_de_nuevo_juego": { "transition": "Sugerencia_Juego" },
+          "Terminar_consulta": { "transition": "Cierre_Exitoso" }
+        }
+      },
+      "Sugerencia_Juego": {
+        "output": "Agradece la sugerencia y explica que el equipo lo considerará.",
+        "Intents": {
+          "Regresar_a_informacion_de_juegos": { "transition": "Juegos_Disponibles" },
+          "Terminar_consulta": { "transition": "Cierre_Exitoso" }
+        }
+      },
+      "Cierre_Exitoso": {
+        "output": "Agradece al usuario por su consulta y despídete cordialmente.",
+        "action": "Finalizar_interaccion"
+      }
+    };
+
+    (function initChatbot() {
+      const toggleBtn = document.getElementById('chatbot-toggle');
+      const box = document.getElementById('chatbot-container');
+      const messages = document.getElementById('chatbot-messages');
+      const quick = document.getElementById('chatbot-quick');
+      const input = document.getElementById('chatbot-text');
+      const sendBtn = document.getElementById('chatbot-send');
+
+      let state = 'Comenzar';
+      let active = true;
+
+      function scrollToEnd() { messages.scrollTop = messages.scrollHeight; }
+      function addMsg(text, who = 'bot') {
+        const div = document.createElement('div');
+        div.className = `msg ${who}`;
+        div.textContent = text;
+        messages.appendChild(div);
+        scrollToEnd();
+      }
+      function renderQuickButtons() {
+        quick.innerHTML = '';
+        if (!active) return;
+        const map = [
+          { label: 'Descuentos', intent: 'Consultar_Descuentos' },
+          { label: 'Juegos', intent: 'Pedir_Informacion_Juegos' },
+          { label: 'Soporte', intent: 'Solicitar_Ayuda_Tecnica' },
+          { label: 'Fin', intent: 'Terminar_consulta' }
+        ];
+        map.forEach(m => {
+          const b = document.createElement('button');
+          b.className = 'quick-btn';
+          b.textContent = m.label;
+          b.addEventListener('click', () => handleIntent(m.intent));
+          quick.appendChild(b);
+        });
+      }
+
+      function interpret(text) {
+        const t = (text || '').toLowerCase();
+        if (/^fin$|terminar|adios|bye/.test(t)) return 'Terminar_consulta';
+        if (/descuento/.test(t)) return 'Consultar_Descuentos';
+        if (/juego|disponible|catalogo|catálogo/.test(t)) return 'Pedir_Informacion_Juegos';
+        if (/soporte|ayuda|tecnico|técnico|contacto/.test(t)) return 'Solicitar_Ayuda_Tecnica';
+        if (state === 'Descuentos_Semana' && /info|detalle|precio|oferta/.test(t)) return 'Usuario_solicita_informacion_sobre_juegos';
+        if (state === 'Juegos_Disponibles' && /descuento|oferta/.test(t)) return 'Usuario_cambia_de_tema';
+        if (state === 'Contacto_Soporte' && /sugerencia|agregar|nuevo/.test(t)) return 'Recibir_sugerencia_de_nuevo_juego';
+        if (state === 'Sugerencia_Juego' && /juego/.test(t)) return 'Regresar_a_informacion_de_juegos';
+        return 'Otracosa';
+      }
+
+      function handleIntent(intentName) {
+        if (!active) return;
+        const node = ChatbotFlow[state];
+        if (!node) return;
+        if (node.Intents) {
+          const intent = node.Intents[intentName];
+          if (intent) {
+            if (intent.response) addMsg(intent.response, 'bot');
+            if (intent.transition) changeState(intent.transition);
+            return;
+          }
+        }
+        const fallback = ChatbotFlow['Seleccion_Tema'].Intents['Otracosa'];
+        addMsg(fallback.response, 'bot');
+        changeState(fallback.transition);
+      }
+
+      function changeState(next) {
+        state = next;
+        const node = ChatbotFlow[state];
+        if (!node) return;
+        if (node.output) {
+          const out = node.output.replace("knowledge_base.search('descuentos')", "Descuentos: - Cyberpunk 2077 (-30%) - Elden Ring (-20%) - FIFA 23 (-50%)");
+          addMsg(out, 'bot');
+        }
+        if (state === 'Cierre_Exitoso') {
+          addMsg('¡Gracias por tu visita! Hasta pronto.', 'bot');
+          active = false;
+          quick.innerHTML = '';
+        }
+      }
+
+      function sendUserText() {
+        const val = (input.value || '').trim();
+        if (!val) return;
+        addMsg(val, 'user');
+        input.value = '';
+        const intent = interpret(val);
+        handleIntent(intent);
+      }
+
+      document.getElementById('chatbot-toggle').addEventListener('click', () => {
+        const shown = box.style.display === 'flex';
+        box.style.display = shown ? 'none' : 'flex';
+        box.style.flexDirection = 'column';
+        if (!shown) input.focus();
+      });
+      document.getElementById('chatbot-send').addEventListener('click', sendUserText);
+      input.addEventListener('keydown', e => { if (e.key === 'Enter') sendUserText(); });
+
+      
+      addMsg("Hola, ¿en qué puedo ayudarte? Puedo ofrecerte descuentos de la semana y más.", 'bot');
+      changeState(ChatbotFlow['Comenzar'].transition);
+      renderQuickButtons();
+    })();
+  </script>
+
+  <style id="custom-cursor-chatbot-fix">
+    /* Asegura que el cursor personalizado quede por encima del chatbot */
+    #custom-cursor { z-index: 10020 !important; pointer-events: none; }
+  </style>
+  </body>
+</html>

@@ -1,0 +1,122 @@
+.settings-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+}
+
+.settings-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  color: var(--heading-color, #00ffff);
+  text-shadow: 0 0 10px var(--heading-color, #00ffff);
+  font-family: var(--pixel-font, 'Courier New', monospace);
+}
+
+.settings-section {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  border: 2px solid var(--border-color, #00ff00);
+  border-radius: 8px;
+  background: var(--bg-secondary, #0000aa);
+  box-shadow: var(--card-shadow, 0 0 20px rgba(0, 255, 255, 0.3));
+  position: relative;
+}
+
+.settings-section::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--accent-color, #ff00ff), var(--text-secondary, #00ffff), var(--text-primary, #ffcc00));
+  border-radius: 10px;
+  z-index: -1;
+  opacity: 0.3;
+  filter: blur(5px);
+}
+
+.btn-typography {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  border: 2px solid var(--border-color, #00ff00);
+  border-radius: 4px;
+  background: var(--bg-tertiary, #0033cc);
+  color: var(--text-primary, #ffcc00);
+  cursor: pointer;
+  font-weight: 600;
+  font-family: var(--pixel-font, 'Courier New', monospace);
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+}
+
+.btn-typography:hover {
+  background: var(--accent-color, #ff00ff);
+  color: var(--bg-primary, #000033);
+  box-shadow: 0 0 15px var(--accent-color, #ff00ff);
+  transform: translateY(-2px);
+}
+
+.btn-typography:active {
+  transform: translateY(0);
+  box-shadow: 0 0 10px var(--accent-color, #ff00ff);
+}
+
+/* ===== Estilo para la sección del cursor ===== */
+
+/* Subtítulo dentro de las secciones */
+.settings-title-small {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+  color: var(--text-primary, #00ffff);
+  text-shadow: 0 0 6px var(--text-primary, #00ffff);
+  text-align: center;
+  font-family: var(--pixel-font, 'Courier New', monospace);
+}
+
+/* Etiqueta del texto */
+.settings-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: var(--text-primary, #00ffcc);
+  font-family: var(--pixel-font, 'Courier New', monospace);
+  text-shadow: 0 0 4px var(--text-secondary, #00ffff);
+}
+
+/* Slider retro */
+.settings-slider {
+  width: 100%;
+  height: 8px;
+  border-radius: 6px;
+  background: var(--bg-tertiary, #0033cc);
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.3);
+  transition: box-shadow 0.3s ease, background 0.3s ease;
+}
+
+.settings-slider:hover {
+  box-shadow: 0 0 12px var(--accent-color, #ff00ff);
+}
+
+/* Personalización del thumb (el control del slider) */
+.settings-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--accent-color, #ff00ff);
+  box-shadow: 0 0 12px var(--accent-color, #ff00ff);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+.settings-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  background: var(--text-primary, #00ffff);
+  box-shadow: 0 0 20px var(--text-primary, #00ffff);
+}

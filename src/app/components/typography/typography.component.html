@@ -1,0 +1,67 @@
+<div class="typography-container">
+  <div class="typography-card">
+    <h2 class="typography-title" [style.fontFamily]="selectedFont">
+      Configuración de Tipografía
+    </h2>
+
+    <div class="controls-wrapper">
+      <!-- Selector de Fuente -->
+      <div class="control-section">
+        <label class="control-label">
+          <span class="label-icon">🎨</span>
+          Tipo de Letra
+        </label>
+        <select 
+          class="custom-select"
+          [(ngModel)]="selectedFont" 
+          (change)="onFontChange()">
+          <option *ngFor="let font of availableFonts" 
+                  [value]="font.value">
+            {{font.label}}
+          </option>
+        </select>
+      </div>
+
+      <!-- Selector de Peso de Fuente -->
+      <div class="control-section">
+        <label class="control-label">
+          <span class="label-icon">💪</span>
+          Peso de Letra
+        </label>
+        <select 
+          class="custom-select"
+          [(ngModel)]="fontWeight" 
+          (change)="onFontWeightChange()">
+          <option *ngFor="let weight of fontWeights" 
+                  [value]="weight.value">
+            {{weight.label}}
+          </option>
+        </select>
+      </div>
+
+      <!-- Vista Previa -->
+      <div class="preview-section">
+        <h3 class="preview-title">
+          <span class="label-icon">👁️</span>
+          Vista Previa
+        </h3>
+        <div class="preview-content"
+             [style.font-family]="selectedFont"
+             [style.font-size.px]="fontSize"
+             [style.font-weight]="fontWeight">
+          <p class="preview-line">
+            Este es un texto de ejemplo para ver cómo se verá la tipografía seleccionada.
+          </p>
+          <p class="preview-line preview-alphabet">
+            ABCDEFGHIJKLMNÑOPQRSTUVWXYZ
+            abcdefghijklmnñopqrstuvwxyz
+            1234567890
+          </p>
+          <p class="preview-line">
+            ¡La rápida zorra marrón salta sobre el perro perezoso!
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

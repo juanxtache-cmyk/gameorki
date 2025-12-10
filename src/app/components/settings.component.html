@@ -1,0 +1,38 @@
+
+<div class="settings-container">
+  <h2 class="settings-title">Configuraciones</h2>
+  
+  <div class="settings-section">
+    <app-text-size></app-text-size>
+  </div>
+  
+  <div class="settings-section">
+    <app-contraste></app-contraste>
+  </div>
+  
+  <div class="settings-section">
+    <button type="button" routerLink="/typography" class="btn-typography">
+      Cambio de tipografía
+    </button>
+  </div>
+  
+ <div class="settings-section">
+  <h2 class="settings-title-small">Configuración del Cursor</h2>
+
+  <label for="cursorSize" class="settings-label">
+    Tamaño del cursor: <span class="font-bold">{{ cursorSize }}px</span>
+  </label>
+
+  <input
+    id="cursorSize"
+    type="range"
+    min="10"
+    max="80"
+    [value]="cursorSize"
+    (input)="changeCursorSize($event)"
+    class="settings-slider"
+  />
+</div>
+
+
+</div>

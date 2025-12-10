@@ -1,0 +1,809 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { PurchaseService } from '../services/purchase.service';
+import { KeyGeneratorService } from '../services/key-generator.service';
+import { EmailService } from '../services/email.service';
+import { AuthService } from '../services/auth.service';
+import type { PurchaseOrder } from '../models/order.model';
+import type { GameKey } from '../services/key-generator.service';
+
+@Component({
+  selector: 'app-purchase-history',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './purchase-history.component.html',
+  styleUrls: ['./purchase-history.component.css']
+})
+    .history-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    .history-header {
+      background: linear-gradient(135deg, var(--primary-color, #007bff), var(--secondary-color, #0056b3));
+      color: white;
+      padding: 40px 30px;
+      border-radius: 20px;
+      margin-bottom: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+    }
+
+    .main-title {
+      margin: 0 0 15px 0;
+      font-size: 36px;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .title-icon {
+      font-size: 42px;
+      animation: pulse 2s infinite;
+    }
+
+    .subtitle {
+      margin: 0;
+      font-size: 16px;
+      opacity: 0.9;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .header-decoration {
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 200px;
+      height: 200px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--text-primary, #333);
+      margin-bottom: 25px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-color, #007bff);
+    }
+
+    .stats-section {
+      margin-bottom: 40px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-bottom: 20px;
+    }
+
+    .stat-card {
+      background: var(--card-bg, white);
+      border: 2px solid var(--border-color, #e0e0e0);
+      border-radius: 16px;
+      padding: 30px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--primary-color, #007bff);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 123, 255, 0.15);
+      border-color: var(--primary-color, #007bff);
+    }
+
+    .purchases-card::before { background: #28a745; }
+    .spending-card::before { background: #ffc107; }
+    .games-card::before { background: #17a2b8; }
+
+    .stat-icon {
+      font-size: 48px;
+      opacity: 0.8;
+    }
+
+    .stat-content {
+      flex: 1;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: bold;
+      color: var(--primary-color, #007bff);
+      margin-bottom: 5px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      color: var(--text-secondary, #666);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .loading-section {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--text-secondary, #666);
+    }
+
+    .loading-spinner {
+      width: 60px;
+      height: 60px;
+      border: 4px solid var(--border-color, #e0e0e0);
+      border-top: 4px solid var(--primary-color, #007bff);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+
+    .orders-section {
+      margin-bottom: 40px;
+    }
+
+    .orders-list {
+      display: grid;
+      gap: 25px;
+    }
+
+    .order-card {
+      background: var(--card-bg, white);
+      border: 2px solid var(--border-color, #e0e0e0);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .order-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 15px 40px rgba(0, 123, 255, 0.1);
+      border-color: var(--primary-color, #007bff);
+    }
+
+    .order-header {
+      background: var(--accent-bg, #f8f9fa);
+      padding: 25px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border-color, #e0e0e0);
+    }
+
+    .order-main-info {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .order-identity {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .order-number {
+      font-size: 20px;
+      font-weight: bold;
+      color: var(--primary-color, #007bff);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .order-icon {
+      font-size: 24px;
+    }
+
+    .order-date {
+      color: var(--text-secondary, #666);
+      font-size: 14px;
+    }
+
+    .order-status-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .order-status {
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-completed {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+      border: 2px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.1);
+      color: #856404;
+      border: 2px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .order-amount {
+      text-align: right;
+    }
+
+    .amount-label {
+      font-size: 12px;
+      color: var(--text-secondary, #666);
+      margin-bottom: 5px;
+    }
+
+    .amount-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: #28a745;
+    }
+
+    .order-body {
+      padding: 30px;
+    }
+
+    .games-section {
+      margin-bottom: 30px;
+    }
+
+    .subsection-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--text-primary, #333);
+      margin-bottom: 20px;
+    }
+
+    .subsection-icon {
+      font-size: 20px;
+    }
+
+    .games-grid {
+      display: grid;
+      gap: 15px;
+    }
+
+    .game-item {
+      background: var(--accent-bg, #f8f9fa);
+      padding: 20px;
+      border-radius: 12px;
+      border-left: 4px solid var(--primary-color, #007bff);
+    }
+
+    .game-title {
+      font-weight: bold;
+      color: var(--text-primary, #333);
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .game-details {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .detail-badge {
+      background: var(--card-bg, white);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      border: 1px solid var(--border-color, #e0e0e0);
+    }
+
+    .total-badge {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+      border-color: rgba(40, 167, 69, 0.3);
+    }
+
+    .badge-icon {
+      font-size: 12px;
+    }
+
+    .keys-section {
+      background: var(--accent-bg, #f8f9fa);
+      padding: 25px;
+      border-radius: 16px;
+      border: 2px solid var(--border-color, #e0e0e0);
+    }
+
+    .keys-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .btn-resend {
+      background: #17a2b8;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-resend:hover {
+      background: #138496;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(23, 162, 184, 0.3);
+    }
+
+    .btn-icon {
+      font-size: 14px;
+    }
+
+    .keys-container {
+      display: grid;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .key-card {
+      background: var(--card-bg, white);
+      border: 2px solid var(--border-color, #e0e0e0);
+      border-radius: 12px;
+      padding: 20px;
+      transition: all 0.3s;
+    }
+
+    .key-card:hover {
+      border-color: var(--primary-color, #007bff);
+      box-shadow: 0 8px 25px rgba(0, 123, 255, 0.1);
+    }
+
+    .key-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 15px;
+    }
+
+    .key-game-info {
+      flex: 1;
+    }
+
+    .key-game-title {
+      font-weight: bold;
+      color: var(--text-primary, #333);
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+
+    .key-platform {
+      color: var(--text-secondary, #666);
+      font-size: 13px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .platform-icon {
+      font-size: 14px;
+    }
+
+    .key-status {
+      flex-shrink: 0;
+    }
+
+    .status-badge {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .status-badge.available {
+      background: rgba(40, 167, 69, 0.1);
+      color: #28a745;
+    }
+
+    .status-badge.used {
+      background: rgba(108, 117, 125, 0.1);
+      color: #6c757d;
+    }
+
+    .key-body {
+      display: grid;
+      gap: 15px;
+    }
+
+    .key-code-display {
+      background: var(--accent-bg, #f8f9fa);
+      border: 2px dashed var(--primary-color, #007bff);
+      border-radius: 8px;
+      padding: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+    }
+
+    .key-code-display:hover {
+      background: rgba(0, 123, 255, 0.05);
+      border-style: solid;
+    }
+
+    .key-code {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--primary-color, #007bff);
+      margin-bottom: 5px;
+      letter-spacing: 2px;
+    }
+
+    .copy-hint {
+      font-size: 12px;
+      color: var(--text-secondary, #666);
+      opacity: 0.8;
+    }
+
+    .key-metadata {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .metadata-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      color: var(--text-secondary, #666);
+    }
+
+    .metadata-icon {
+      font-size: 14px;
+    }
+
+    .activation-help {
+      background: rgba(255, 193, 7, 0.1);
+      border: 2px solid rgba(255, 193, 7, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      display: flex;
+      gap: 15px;
+    }
+
+    .help-icon {
+      font-size: 32px;
+      flex-shrink: 0;
+    }
+
+    .help-content h5 {
+      margin: 0 0 10px 0;
+      color: #856404;
+      font-size: 16px;
+    }
+
+    .help-content ol {
+      margin: 0;
+      padding-left: 20px;
+      color: #856404;
+    }
+
+    .help-content li {
+      margin-bottom: 5px;
+      line-height: 1.4;
+    }
+
+    .empty-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 50vh;
+      padding: 40px;
+    }
+
+    .empty-content {
+      text-align: center;
+      max-width: 500px;
+    }
+
+    .empty-icon {
+      font-size: 80px;
+      margin-bottom: 25px;
+      opacity: 0.6;
+    }
+
+    .empty-title {
+      color: var(--text-primary, #333);
+      margin-bottom: 15px;
+      font-size: 28px;
+    }
+
+    .empty-message {
+      color: var(--text-secondary, #666);
+      margin-bottom: 30px;
+      font-size: 16px;
+      line-height: 1.5;
+    }
+
+    .empty-features {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .feature-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: var(--text-secondary, #666);
+    }
+
+    .feature-icon {
+      font-size: 24px;
+      color: var(--primary-color, #007bff);
+    }
+
+    .btn-explore {
+      background: var(--primary-color, #007bff);
+      color: white;
+      border: none;
+      padding: 15px 25px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+
+    .btn-explore:hover {
+      background: var(--primary-hover, #0056b3);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(0, 123, 255, 0.3);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      .history-container {
+        padding: 15px;
+      }
+
+      .history-header {
+        padding: 30px 20px;
+      }
+
+      .main-title {
+        font-size: 28px;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .order-header {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 20px;
+      }
+
+      .order-main-info {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .order-body {
+        padding: 20px;
+      }
+
+      .keys-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .game-details {
+        flex-direction: column;
+      }
+
+      .empty-features {
+        flex-direction: column;
+        gap: 20px;
+      }
+
+      .key-code {
+        font-size: 16px;
+      }
+    }
+})
+export class PurchaseHistoryComponent implements OnInit {
+  orders: PurchaseOrder[] = [];
+  userStats: any = {};
+  isLoading = true;
+
+  constructor(
+    private purchaseService: PurchaseService,
+    private keyGeneratorService: KeyGeneratorService,
+    private emailService: EmailService,
+    private authService: AuthService
+  ) {}
+
+  ngOnInit() {
+    this.loadPurchaseHistory();
+  }
+
+  private loadPurchaseHistory() {
+    // Verificar autenticación
+    const currentUser = this.authService.currentUserValue;
+    if (!currentUser) {
+      this.isLoading = false;
+      return;
+    }
+
+    // Cargar órdenes del usuario
+    this.orders = this.purchaseService.getUserOrders();
+    
+    // Cargar estadísticas
+    this.userStats = this.purchaseService.getUserPurchaseStats();
+    
+    this.isLoading = false;
+  }
+
+  getOrderKeys(orderNumber: string): GameKey[] {
+    return this.purchaseService.getOrderKeys(orderNumber);
+  }
+
+  async resendKeys(orderNumber: string) {
+    const success = await this.purchaseService.resendOrderKeys(orderNumber);
+    if (success) {
+      alert('¡Keys reenviadas exitosamente a tu correo electrónico!');
+    } else {
+      alert('Hubo un error al reenviar las keys. Inténtalo más tarde.');
+    }
+  }
+
+  copyKeyToClipboard(key: string) {
+    navigator.clipboard.writeText(key).then(() => {
+      // Mostrar feedback visual
+      const toast = document.createElement('div');
+      toast.textContent = '¡Key copiada al portapapeles!';
+      toast.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #28a745;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 4px;
+        z-index: 10000;
+        font-family: Arial, sans-serif;
+      `;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.parentNode.removeChild(toast);
+        }
+      }, 2000);
+    });
+  }
+
+  getStatusClass(status: string): string {
+    switch (status) {
+      case 'completed':
+        return 'status-completed';
+      case 'pending':
+        return 'status-pending';
+      default:
+        return 'status-pending';
+    }
+  }
+
+  getStatusText(status: string): string {
+    switch (status) {
+      case 'completed':
+        return 'Completada';
+      case 'pending':
+        return 'Pendiente';
+      case 'cancelled':
+        return 'Cancelada';
+      default:
+        return status;
+    }
+  }
+
+  formatDate(date: Date): string {
+    return new Date(date).toLocaleDateString('es-ES', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  }
+
+  trackByOrderId(index: number, order: PurchaseOrder): string {
+    return order.id;
+  }
+
+  getStatusIcon(status: string): string {
+    switch (status) {
+      case 'completed':
+        return '✅';
+      case 'pending':
+        return '⏳';
+      case 'cancelled':
+        return '❌';
+      default:
+        return '❓';
+    }
+  }
+}

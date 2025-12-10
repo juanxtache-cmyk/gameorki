@@ -1,0 +1,315 @@
+<div class="checkout-container">
+  <!-- Header Mejorado -->
+  <div class="checkout-header">
+    <div class="header-content">
+      <div class="header-main">
+        <div class="header-icon">🛒</div>      <!-- Trust Badges -->
+      <div class="trust-section">
+        <h4>Compra con Confianza</h4>
+        <div class="trust-badges">
+          <div class="trust-badge">
+            <div class="trust-icon">🔒</div>
+            <span>SSL Seguro</span>
+          </div>
+          <div class="trust-badge">
+            <div class="trust-icon">💯</div>
+            <span>Garantía Total</span>
+          </div>
+          <div class="trust-badge">
+            <div class="trust-icon">⭐</div>
+            <span>+10k Clientes</span>
+          </div>
+        </div>ass="header-text">
+          <h1>Finalizar Compra</h1>
+          <p class="header-subtitle">Completa tu pedido de forma segura</p>
+        </div>
+      </div>
+      <button (click)="goBack()" class="btn-back">
+        <span class="btn-icon">←</span>
+        <span>Volver al Carrito</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="checkout-content" *ngIf="cart && cart.items.length > 0">
+    <div class="main-content">
+      <!-- Resumen del Pedido Mejorado -->
+      <div class="section-card order-summary-section">
+        <div class="section-header">
+          <div class="section-icon">📋</div>
+          <h2>Resumen del Pedido</h2>
+        </div>
+        
+        <div class="order-items">
+          <div class="item-card" *ngFor="let item of cart.items">
+            <div class="item-image-container">
+              <img [src]="item.game.imageUrl" [alt]="item.game.title" class="item-image">
+              <div class="quantity-badge">{{ item.quantity }}</div>
+            </div>
+            <div class="item-details">
+              <h3 class="item-title">{{ item.game.title }}</h3>
+              <div class="item-meta">
+                <span class="item-platform">🎮 PC Steam</span>
+                <span class="item-type">🔑 Clave Digital</span>
+              </div>
+              <div class="item-pricing">
+                <span class="unit-price">${{ item.game.price }} × {{ item.quantity }}</span>
+                <span class="total-price">${{ (item.game.price * item.quantity).toFixed(2) }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="order-totals">
+          <div class="total-line">
+            <span>Subtotal</span>
+            <span>${{ orderSummary?.subtotal?.toFixed(2) || '0.00' }}</span>
+          </div>
+          <div class="total-line">
+            <span>Impuestos (16%)</span>
+            <span>${{ orderSummary?.taxes?.toFixed(2) || '0.00' }}</span>
+          </div>
+          <div class="total-line final-total">
+            <span>Total</span>
+            <span>${{ orderSummary?.total?.toFixed(2) || '0.00' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Información de Entrega Mejorada -->
+      <div class="section-card delivery-section">
+        <div class="section-header">
+          <div class="section-icon">📧</div>
+          <h2>Entrega Digital</h2>
+        </div>
+        
+        <div class="delivery-card">
+          <div class="delivery-icon-container">
+            <div class="delivery-icon">🔑</div>
+            <div class="delivery-animation">✨</div>
+          </div>
+          <div class="delivery-content">
+            <h3>Keys de Activación Instantáneas</h3>
+            <p class="delivery-description">
+              Todas las keys serán enviadas automáticamente a tu correo electrónico inmediatamente después del pago.
+            </p>
+            <div class="email-display">
+              <span class="email-icon">📧</span>
+              <span class="email-text">{{ currentUser?.email }}</span>
+              <span class="verified-badge">✓ Verificado</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="keys-preview">
+          <h4>Recibirás:</h4>
+          <div class="keys-list">
+            <div class="key-preview-item" *ngFor="let item of cart.items">
+              <div class="key-icon">🎮</div>
+              <div class="key-info">
+                <span class="key-game">{{ item.game.title }}</span>
+                <span class="key-count">{{ item.quantity }} key{{ item.quantity > 1 ? 's' : '' }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Método de Pago Mejorado -->
+      <div class="section-card payment-section">
+        <div class="section-header">
+          <div class="section-icon">💳</div>
+          <h2>Método de Pago</h2>
+        </div>
+        
+        <div class="payment-methods">
+          <label class="payment-option" [class.selected]="selectedPaymentMethod === 'credit_card'">
+            <input type="radio" [(ngModel)]="selectedPaymentMethod" value="credit_card">
+            <div class="payment-content">
+              <div class="payment-icon">💳</div>
+              <div class="payment-info">
+                <span class="payment-title">Tarjeta de Crédito/Débito</span>
+                <span class="payment-desc">Visa, Mastercard, American Express</span>
+              </div>
+            </div>
+            <div class="payment-check">✓</div>
+          </label>
+
+          <label class="payment-option" [class.selected]="selectedPaymentMethod === 'paypal'">
+            <input type="radio" [(ngModel)]="selectedPaymentMethod" value="paypal" (change)="onPaymentMethodChange()">
+            <div class="payment-content">
+              <div class="payment-icon">🅿️</div>
+              <div class="payment-info">
+                <span class="payment-title">PayPal</span>
+                <span class="payment-desc">Pago rápido y seguro</span>
+              </div>
+            </div>
+            <div class="payment-check">✓</div>
+          </label>
+
+        </div>
+
+        <div *ngIf="selectedPaymentMethod === 'paypal'" class="paypal-buttons-container">
+          <div id="paypal-button-container"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar de Compra -->
+    <div class="sidebar">
+      <div class="purchase-card">
+        <div class="purchase-header">
+          <h3>Resumen de Pago</h3>
+        </div>
+        
+        <div class="purchase-details">
+          <div class="detail-row">
+            <span>{{ getTotalKeyCount() }} Keys Digitales</span>
+            <span>${{ orderSummary?.subtotal?.toFixed(2) || '0.00' }}</span>
+          </div>
+          <div class="detail-row">
+            <span>Impuestos</span>
+            <span>${{ orderSummary?.taxes?.toFixed(2) || '0.00' }}</span>
+          </div>
+          <div class="detail-separator"></div>
+          <div class="detail-row total-row">
+            <span>Total</span>
+            <span>${{ orderSummary?.total?.toFixed(2) || '0.00' }}</span>
+          </div>
+        </div>
+
+        <button 
+          (click)="processPurchase()" 
+          [disabled]="isProcessing || !selectedPaymentMethod"
+          class="btn-purchase"
+        >
+          <span class="btn-content" *ngIf="!isProcessing">
+            <span class="btn-icon">🎮</span>
+            <span>Completar Compra</span>
+          </span>
+          <span class="btn-content" *ngIf="isProcessing">
+            <span class="btn-spinner"></span>
+            <span>Procesando...</span>
+          </span>
+        </button>
+
+        <div class="security-features">
+          <div class="feature">
+            <span class="feature-icon">🔒</span>
+            <span>Compra 100% Segura</span>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">⚡</span>
+            <span>Entrega Instantánea</span>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">🔄</span>
+            <span>Reembolso 24h</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="trust-section">
+        <h4>Compra con Confianza</h4>
+        <div class="trust-badges">
+          <div class="trust-badge">
+            <div class="trust-icon">�️</div>
+            <span>SSL Seguro</span>
+          </div>
+          <div class="trust-badge">
+            <div class="trust-icon">💯</div>
+            <span>Garantía Total</span>
+          </div>
+          <div class="trust-badge">
+            <div class="trust-icon">⭐</div>
+            <span>+10k Clientes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Carrito Vacío -->
+  <div class="empty-cart" *ngIf="!cart || cart.items.length === 0">
+    <div class="empty-message">
+      <h2>🛒 Tu carrito está vacío</h2>
+      <p>Agrega algunos juegos antes de proceder al checkout</p>
+      <button (click)="goToStore()" class="btn-shop">🎮 Ir a la Tienda</button>
+    </div>
+  </div>
+
+  <!-- Modal de Éxito -->
+  <div class="success-modal-overlay" *ngIf="showSuccessModal" (click)="closeSuccessModal()">
+    <div class="success-modal-content" (click)="$event.stopPropagation()">
+      <div class="success-header">
+        <div class="success-icon-container">
+          <div class="success-icon">✅</div>
+          <div class="success-particles">
+            <span class="particle">🎉</span>
+            <span class="particle">🎮</span>
+            <span class="particle">🔑</span>
+            <span class="particle">✨</span>
+          </div>
+        </div>
+        <h2>¡Compra Exitosa!</h2>
+        <p class="success-subtitle">Tu pedido ha sido procesado correctamente</p>
+      </div>
+
+      <div class="success-body">
+        <div class="order-info-card">
+          <div class="order-detail">
+            <span class="detail-label">📋 Número de Orden:</span>
+            <span class="detail-value">{{ successOrderNumber }}</span>
+          </div>
+          <div class="order-detail">
+            <span class="detail-label">📅 Fecha:</span>
+            <span class="detail-value">{{ getCurrentDate() }}</span>
+          </div>
+          <div class="order-detail">
+            <span class="detail-label">🔑 Keys Generadas:</span>
+            <span class="detail-value">{{ getTotalKeyCount() }}</span>
+          </div>
+        </div>
+
+        <div class="success-message-card">
+          <div class="message-icon">📧</div>
+          <div class="message-content">
+            <h3>Keys Enviadas por Correo</h3>
+            <p>Hemos enviado todas las keys de activación a tu correo electrónico. Revisa tu bandeja de entrada y la carpeta de spam.</p>
+          </div>
+        </div>
+
+        <div class="success-features">
+          <div class="feature">
+            <span class="feature-icon">🔒</span>
+            <span>Compra Segura</span>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">⚡</span>
+            <span>Entrega Instantánea</span>
+          </div>
+          <div class="feature">
+            <span class="feature-icon">🔄</span>
+            <span>Soporte 24/7</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="success-actions">
+        <button (click)="viewOrderHistory()" class="btn-primary">
+          <span class="btn-icon">📋</span>
+          Ver Mis Compras
+        </button>
+        <button (click)="goToStore()" class="btn-secondary">
+          <span class="btn-icon">🎮</span>
+          Seguir Comprando
+        </button>
+      </div>
+
+      <button class="modal-close-btn" (click)="closeSuccessModal()">
+        <span>×</span>
+      </button>
+    </div>
+  </div>
+</div>
