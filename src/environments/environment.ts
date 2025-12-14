@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://gameorki-3h61.vercel.app/login'
+  apiUrl: 'https://gameorki-production.up.railway.app/home'
 }

@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
 import { BehaviorSubject, Observable, catchError, map, tap, of } from "rxjs"
 import type { User } from "../models/user.model"
+import { API_URL } from '../configs/api.config';
 
 
 @Injectable({
@@ -10,7 +11,9 @@ import type { User } from "../models/user.model"
 export class AuthService {
 
 
-  private apiUrl = 'https://gameorki-3h61.vercel.app/api';
+ // private apiUrl = 'https://gameorki-3h61.vercel.app/api';
+  private apiUrl = API_URL;
+
 
 
   private currentUserSubject = new BehaviorSubject<User | null>(null)
