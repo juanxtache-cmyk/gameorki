@@ -3,6 +3,7 @@ import { CommonModule } from "@angular/common";
 import { RouterLink, Router } from "@angular/router";
 import { FormsModule } from "@angular/forms";
 import { AuthService } from "../services/auth.service";
+import { environment } from "../../../environments/environment";
 
 @Component({
   selector: "app-forgot-password",
@@ -237,9 +238,7 @@ export class ForgotPasswordComponent {
   
   // Método para verificar si estamos en modo desarrollo
   private isDevMode(): boolean {
-    // Una forma simple de detectar si estamos en desarrollo
-    // Puedes mejorar esto según tu configuración de entorno
-    return window.location.hostname === 'localhost' || 
-           window.location.hostname === '127.0.0.1';
-  }
+  return !environment.production;
+}
+
 }
