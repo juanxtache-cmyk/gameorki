@@ -2,15 +2,15 @@ import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
 import { BehaviorSubject, Observable, catchError, map, tap, of } from "rxjs"
 import type { User } from "../models/user.model"
-import { environment } from "../../../environments/environment"
+import { API_URL } from "../../config/api.config"
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
 
-  // 🔥 AQUÍ YA NO HAY LOCALHOST
-  private apiUrl = `${environment.apiUrl}/api`
+  
+  private apiUrl = API_URL;
 
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   public currentUser$ = this.currentUserSubject.asObservable()
