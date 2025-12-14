@@ -9,8 +9,9 @@ import type { User } from "../models/user.model"
 })
 export class AuthService {
 
-  
-  private apiUrl = API_URL;
+
+  private apiUrl = 'https://gameorki-3h61.vercel.app/api';
+
 
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   public currentUser$ = this.currentUserSubject.asObservable()
