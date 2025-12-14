@@ -2,13 +2,16 @@ import { Injectable } from "@angular/core"
 import { HttpClient } from "@angular/common/http"
 import { BehaviorSubject, Observable, catchError, map, tap, of } from "rxjs"
 import type { User } from "../models/user.model"
+import { environment } from "src/environments/environment"
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  // Actualiza esto al puerto correcto si es diferente
-  private apiUrl = "http://localhost:3000/api"
+
+  // 🔥 AQUÍ YA NO HAY LOCALHOST
+  private apiUrl = `${environment.apiUrl}/api`
+
   private currentUserSubject = new BehaviorSubject<User | null>(null)
   public currentUser$ = this.currentUserSubject.asObservable()
 
@@ -32,10 +35,9 @@ export class AuthService {
       lastName: 'Prueba',
       role: 'user'
     }
-  ];
+  ]
 
   constructor(private http: HttpClient) {
-    // Cargar usuario del localStorage si existe
     const storedUser = localStorage.getItem("currentUser")
     if (storedUser) {
       this.currentUserSubject.next(JSON.parse(storedUser))
@@ -54,16 +56,18 @@ export class AuthService {
     localStorage.setItem('token', token)
   }
 
+  // ============================
+  // REGISTRO
+  // ============================
   register(user: User): Observable<boolean> {
-    return this.http.post<{message: string, user: User, token: string}>( 
-      `${this.apiUrl}/auth/register`, 
+    return this.http.post<{ message: string, user: User, token: string }>(
+      `${this.apiUrl}/auth/register`,
       user,
-      { 
+      {
         headers: {
           'Content-Type': 'application/json',
           'Accept': 'application/json'
-        },
-        withCredentials: false
+        }
       }
     ).pipe(
       tap(response => {
@@ -73,39 +77,41 @@ export class AuthService {
           localStorage.setItem('currentUser', JSON.stringify(response.user))
         }
       }),
-      map(response => {
-        return true
-      }),
+      map(() => true),
       catchError(error => {
         console.error('Error en el registro:', error)
         throw error
       })
-    );
-  }  login(usernameOrEmail: string, password: string): Observable<User | null> {
-    // Primero verificar usuarios de prueba (para desarrollo)
-    const testUser = this.testUsers.find(user => 
-      (user.username === usernameOrEmail || user.email === usernameOrEmail) && 
+    )
+  }
+
+  // ============================
+  // LOGIN
+  // ============================
+  login(usernameOrEmail: string, password: string): Observable<User | null> {
+
+    // Usuarios de prueba (solo desarrollo)
+    const testUser = this.testUsers.find(user =>
+      (user.username === usernameOrEmail || user.email === usernameOrEmail) &&
       user.password === password
-    );
+    )
 
     if (testUser) {
-      // Login exitoso con usuario de prueba
-      const { password: _, ...userWithoutPassword } = testUser;
-      localStorage.setItem('token', 'test-token-' + testUser.id);
-      localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
-      this.currentUserSubject.next(userWithoutPassword);
-      return of(userWithoutPassword);
+      const { password: _, ...userWithoutPassword } = testUser
+      localStorage.setItem('token', 'test-token-' + testUser.id)
+      localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword))
+      this.currentUserSubject.next(userWithoutPassword)
+      return of(userWithoutPassword)
     }
 
-    // Si no es usuario de prueba, intentar con API
     const loginData = {
       email: usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
       username: !usernameOrEmail.includes('@') ? usernameOrEmail : undefined,
       password
-    };
+    }
 
-    return this.http.post<{message: string, user: User, token: string}>(
-      `${this.apiUrl}/auth/login`, 
+    return this.http.post<{ message: string, user: User, token: string }>(
+      `${this.apiUrl}/auth/login`,
       loginData,
       {
         headers: {
@@ -116,100 +122,66 @@ export class AuthService {
     ).pipe(
       tap(response => {
         if (response.user && response.token) {
-          localStorage.setItem('token', response.token);
-          const { password, ...userWithoutPassword } = response.user;
-          localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword));
-          this.currentUserSubject.next(userWithoutPassword);
+          localStorage.setItem('token', response.token)
+          const { password, ...userWithoutPassword } = response.user
+          localStorage.setItem('currentUser', JSON.stringify(userWithoutPassword))
+          this.currentUserSubject.next(userWithoutPassword)
         }
       }),
       map(response => response.user),
       catchError(error => {
-        console.error('Error en el login:', error);
-        // Manejo más específico del error
-        if (error.status === 401) {
-          throw new Error('Credenciales inválidas');
-        } else if (error.status === 404) {
-          throw new Error('Usuario no encontrado');
-        } else {
-          throw new Error('Error en el servidor. Por favor, intente más tarde');
-        }
+        console.error('Error en el login:', error)
+        throw error
       })
-    );
-  }  logout(): void {
-    // Primero notificar el cambio de estado para que los servicios dependientes se actualicen
-    this.currentUserSubject.next(null);
-    
-    // Luego limpiar el almacenamiento local
-    localStorage.removeItem("currentUser");
-    localStorage.removeItem("token");
-    localStorage.removeItem("cart"); // Asegurarnos de limpiar también el carrito local
-  }
-    // Método para solicitar restablecimiento de contraseña
-  forgotPassword(email: string): Observable<any> {
-    return this.http.post<{message: string, token?: string}>(
-      `${this.apiUrl}/auth/forgot-password`,
-      { email },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    ).pipe(
-      catchError(error => {
-        console.error('Error en la solicitud de restablecimiento de contraseña:', error);
-        throw error;
-      })
-    );
-  }
-  
-  // Método para verificar código
-  verifyCode(email: string, code: string): Observable<any> {
-    return this.http.post<{message: string, token: string}>(
-      `${this.apiUrl}/auth/verify-code`,
-      { email, code },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    ).pipe(
-      catchError(error => {
-        console.error('Error al verificar el código:', error);
-        throw error;
-      })
-    );
-  }
-  
-  // Método para restablecer contraseña
-  resetPassword(token: string, newPassword: string): Observable<any> {
-    return this.http.post<{message: string}>(
-      `${this.apiUrl}/auth/reset-password`,
-      { token, newPassword },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        }
-      }
-    ).pipe(
-      catchError(error => {
-        console.error('Error al restablecer la contraseña:', error);
-        throw error;
-      })
-    );
+    )
   }
 
+  // ============================
+  // LOGOUT
+  // ============================
+  logout(): void {
+    this.currentUserSubject.next(null)
+    localStorage.removeItem("currentUser")
+    localStorage.removeItem("token")
+    localStorage.removeItem("cart")
+  }
+
+  // ============================
+  // PASSWORD RECOVERY
+  // ============================
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/auth/forgot-password`,
+      { email }
+    )
+  }
+
+  verifyCode(email: string, code: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/auth/verify-code`,
+      { email, code }
+    )
+  }
+
+  resetPassword(token: string, newPassword: string): Observable<any> {
+    return this.http.post(
+      `${this.apiUrl}/auth/reset-password`,
+      { token, newPassword }
+    )
+  }
+
+  // ============================
+  // HELPERS
+  // ============================
   isLoggedIn(): boolean {
-    return !!this.currentUserValue && !!this.getToken();
+    return !!this.currentUserValue && !!this.getToken()
   }
 
   isAdmin(): boolean {
-    return this.currentUserValue?.role === 'admin';
+    return this.currentUserValue?.role === 'admin'
   }
 
   hasRole(role: string): boolean {
-    return this.currentUserValue?.role === role;
+    return this.currentUserValue?.role === role
   }
 }
