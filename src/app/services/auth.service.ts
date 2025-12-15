@@ -11,7 +11,6 @@ import { API_URL } from '../configs/api.config';
 export class AuthService {
 
 
- // private apiUrl = 'https://gameorki-3h61.vercel.app/api';
   private apiUrl = API_URL;
 
 
