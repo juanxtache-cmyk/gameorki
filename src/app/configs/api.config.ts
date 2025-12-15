@@ -1,1 +1,1 @@
-export const API_URL = 'https://gameorki:8888/auth/register';
+export const API_URL = 'https://gameorki/api';
