@@ -1,1 +1,1 @@
-export const API_URL = 'https://gameorki-production.up.railway.app';
+export const API_URL = 'https://gameorki-production.up.railway.app/home';
