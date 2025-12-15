@@ -1,1 +1,1 @@
-export const API_URL = 'https://gameorki/api';
+export const API_URL = 'https://gameorki.ferrocarril.interno/api';
