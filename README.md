@@ -102,6 +102,8 @@ DB_DATABASE=game_store_db
 JWT_SECRET=tu_jwt_secret
 EMAIL_USER=tu_email@gmail.com
 EMAIL_PASS=tu_app_password
+# URL del frontend desplegado (ej. https://gameorki-production.up.railway.app)
+FRONTEND_URL=https://gameorki-production.up.railway.app
 ```
 
 4. **Iniciar el servidor de desarrollo**:
