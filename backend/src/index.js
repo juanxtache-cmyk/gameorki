@@ -28,10 +28,20 @@ const allowedOrigins = [
 
 console.log('✅ Allowed CORS origins:', allowedOrigins);
 
+// Logear las peticiones entrantes para debug (se puede remover luego)
+app.use((req, res, next) => {
+  // Solo registrar peticiones relevantes para no llenar logs
+  if (req.originalUrl.startsWith('/api/auth')) {
+    console.log(`➡️ ${new Date().toISOString()} - Incoming request: ${req.method} ${req.originalUrl} - Origin: ${req.headers.origin || 'no-origin'}`);
+  }
+  next();
+});
+
 app.use(
   cors({
     origin: (origin, callback) => {
       // Permitir peticiones sin origin (ej. curl, Postman)
+      console.log('🔎 CORS check for origin:', origin);
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) !== -1) {
         return callback(null, true);
@@ -43,6 +53,9 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
   })
 );
+
+// Asegurar que las peticiones OPTIONS siempre reciban respuesta para permitir preflight
+app.options('*', cors());
 app.use(express.json())
 
 // Servir archivos estáticos (para archivos de prueba)
