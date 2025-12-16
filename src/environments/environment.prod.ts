@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://gameorki-production.up.railway.app/api'
+  apiUrl: 'https://gameorki-backend.up.railway.app/api'
 };
