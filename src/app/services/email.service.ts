@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import type { Cart } from '../models/cart.model';
 import { GameKey } from './key-generator.service';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../environments/environment';
 
 export interface EmailTemplate {
   to: string;
