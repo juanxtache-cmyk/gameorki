@@ -14,14 +14,35 @@ const app = express()
 const PORT = process.env.PORT || 3000;
 
 // Middleware
+// Permitir orígenes configurables: usar FRONTEND_URL en producción o caer al fallback con orígenes locales
+const FRONTEND_URL = process.env.FRONTEND_URL || 'https://gameorki-production.up.railway.app';
+const allowedOrigins = [
+  FRONTEND_URL,
+  "http://localhost:4200",
+  "http://127.0.0.1:4200",
+  "http://localhost:4201",
+  "http://127.0.0.1:4201",
+  "http://localhost:3000",
+  "http://127.0.0.1:3000",
+];
+
+console.log('✅ Allowed CORS origins:', allowedOrigins);
+
 app.use(
   cors({
-    origin: ["http://localhost:4200", "http://127.0.0.1:4200", "http://localhost:4201", "http://127.0.0.1:4201","http://localhost:3000","http://127.0.0.1:3000"],
+    origin: (origin, callback) => {
+      // Permitir peticiones sin origin (ej. curl, Postman)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        return callback(null, true);
+      }
+      return callback(new Error('CORS policy: origin not allowed'), false);
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Origin", "Accept"],
-  }),
-)
+  })
+);
 app.use(express.json())
 
 // Servir archivos estáticos (para archivos de prueba)

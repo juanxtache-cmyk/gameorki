@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import type { Cart } from '../models/cart.model';
 import { GameKey } from './key-generator.service';
+import { environment } from 'src/environments/environment';
 
 export interface EmailTemplate {
   to: string;
@@ -15,7 +16,7 @@ export interface EmailTemplate {
   providedIn: 'root'
 })
 export class EmailService {
-  private apiUrl = 'http://localhost:3001/api/email'; // Asegúrate de que este puerto coincida con el del backend
+  private apiUrl = `${environment.apiUrl}/email`; // Usar API configurada en environment
 
   constructor(private http: HttpClient) {}
 
