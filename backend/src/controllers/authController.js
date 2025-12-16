@@ -11,6 +11,9 @@ const getUserRepository = () => {
 // Registro de usuario
 exports.register = async (req, res) => {
   try {
+    // Debug: log incoming register requests to verify handler is reached
+    console.log(`➡️ ${new Date().toISOString()} - authController.register invoked - Method: ${req.method} - URL: ${req.originalUrl} - Origin: ${req.headers.origin || 'no-origin'} - Body keys: ${Object.keys(req.body || {}).join(', ')}`);
+
     const userRepository = getUserRepository();
     
     if (!userRepository) {
