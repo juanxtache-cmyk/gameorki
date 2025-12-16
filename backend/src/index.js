@@ -64,7 +64,41 @@ if (ALLOW_ALL_CORS) {
 
   // Asegurar que las peticiones OPTIONS siempre reciban respuesta para permitir preflight
   app.options('*', cors());
-}
+} 
+
+// Manejar explícitamente preflight OPTIONS para asegurar que siempre devolvemos los headers CORS
+app.use((req, res, next) => {
+  if (req.method !== 'OPTIONS') return next();
+
+  const origin = req.headers.origin;
+  console.log(`➡️ Preflight OPTIONS received for ${req.originalUrl} - Origin: ${origin || 'no-origin'}`);
+
+  if (ALLOW_ALL_CORS) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    return res.sendStatus(204);
+  }
+
+  if (!origin) {
+    // No origin (curl, Postman etc) - allow
+    res.header('Access-Control-Allow-Origin', '*');
+    return res.sendStatus(204);
+  }
+
+  if (allowedOrigins.indexOf(origin) !== -1) {
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    return res.sendStatus(204);
+  }
+
+  console.warn('❌ Preflight blocked by CORS policy for origin:', origin);
+  return res.status(403).send('CORS policy: origin not allowed');
+});
+
 app.use(express.json())
 
 // Servir archivos estáticos (para archivos de prueba)
